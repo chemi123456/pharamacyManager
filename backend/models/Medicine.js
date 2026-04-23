@@ -22,6 +22,10 @@ const medicineSchema = new mongoose.Schema({
   },
   expiryDate: {
     type: Date
+  },
+  statusbar: {
+    type: String,
+    trim: true
   }
 }, { timestamps: true });
 

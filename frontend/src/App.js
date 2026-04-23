@@ -7,7 +7,7 @@ const API_URL = process.env.REACT_APP_API_URL || 'https://pharamacymanager-produ
 
 function App() {
   const [medicines, setMedicines] = useState([]);
-  const [form, setForm] = useState({ name: '', price: '', quantity: '', category: 'General' });
+  const [form, setForm] = useState({ name: '', price: '', quantity: '', category: 'General', statusbar: '' });
   const [editingId, setEditingId] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -38,7 +38,7 @@ function App() {
       } else {
         await axios.post(`${API_URL}/medicines`, form);
       }
-      setForm({ name: '', price: '', quantity: '', category: 'General' });
+      setForm({ name: '', price: '', quantity: '', category: 'General', statusbar: '' });
       fetchData();
     } catch (err) {
       alert(err.response?.data?.message || "Something went wrong");
@@ -57,7 +57,7 @@ function App() {
   };
 
   const handleEdit = (med) => {
-    setForm({ name: med.name, price: med.price, quantity: med.quantity, category: med.category || 'General' });
+    setForm({ name: med.name, price: med.price, quantity: med.quantity, category: med.category || 'General', statusbar: med.statusbar });
     setEditingId(med._id);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -87,17 +87,17 @@ function App() {
             <div className="form-group">
               <label>Medicine Name</label>
               <div style={{ position: 'relative' }}>
-                <input 
-                  placeholder="Enter name..." 
+                <input
+                  placeholder="Enter name..."
                   value={form.name}
-                  onChange={e => setForm({...form, name: e.target.value})} 
+                  onChange={e => setForm({ ...form, name: e.target.value })}
                 />
               </div>
             </div>
 
             <div className="form-group">
               <label>Category</label>
-              <select value={form.category} onChange={e => setForm({...form, category: e.target.value})}>
+              <select value={form.category} onChange={e => setForm({ ...form, category: e.target.value })}>
                 <option value="General">General</option>
                 <option value="Antibiotics">Antibiotics</option>
                 <option value="Painkillers">Painkillers</option>
@@ -108,33 +108,42 @@ function App() {
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
               <div className="form-group">
                 <label>Price ($)</label>
-                <input 
+                <input
                   type="number"
-                  placeholder="0.00" 
+                  placeholder="0.00"
                   value={form.price}
-                  onChange={e => setForm({...form, price: e.target.value})} 
+                  onChange={e => setForm({ ...form, price: e.target.value })}
                 />
               </div>
               <div className="form-group">
                 <label>Quantity</label>
-                <input 
+                <input
                   type="number"
-                  placeholder="0" 
+                  placeholder="0"
                   value={form.quantity}
-                  onChange={e => setForm({...form, quantity: e.target.value})} 
+                  onChange={e => setForm({ ...form, quantity: e.target.value })}
+                />
+              </div>
+              <div className="form-group">
+                <label>Status Bar</label>
+                <input
+                  type="text"
+                  placeholder="Status Bar"
+                  value={form.statusbar}
+                  onChange={e => setForm({ ...form, statusbar: e.target.value })}
                 />
               </div>
             </div>
 
             <button type="submit" className="btn">
-              {editingId ? 'Update Record' : <><Plus size={18} style={{marginRight: '8px'}}/> Add to Inventory</>}
+              {editingId ? 'Update Record' : <><Plus size={18} style={{ marginRight: '8px' }} /> Add to Inventory</>}
             </button>
             {editingId && (
-              <button 
-                type="button" 
-                className="btn btn-secondary" 
-                style={{marginTop: '0.5rem'}}
-                onClick={() => { setEditingId(null); setForm({ name: '', price: '', quantity: '', category: 'General' }); }}
+              <button
+                type="button"
+                className="btn btn-secondary"
+                style={{ marginTop: '0.5rem' }}
+                onClick={() => { setEditingId(null); setForm({ name: '', price: '', quantity: '', category: 'General', statusbar: '' }); }}
               >
                 Cancel
               </button>
@@ -147,7 +156,7 @@ function App() {
             <List size={20} color="var(--text-muted)" />
             <h2 style={{ fontSize: '1.25rem' }}>Inventory List</h2>
           </div>
-          
+
           {loading ? (
             <p>Loading inventory...</p>
           ) : (
@@ -171,6 +180,11 @@ function App() {
                         </p>
                         {getStockStatus(m.quantity)}
                       </div>
+                      {m.statusbar && (
+                        <p style={{ marginTop: '0.5rem', fontSize: '0.8rem', fontStyle: 'italic' }}>
+                          Status: {m.statusbar}
+                        </p>
+                      )}
                     </div>
                     <div className="med-actions">
                       <button className="icon-btn" onClick={() => handleEdit(m)}>
