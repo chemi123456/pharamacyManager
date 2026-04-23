@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Plus, Trash2, Edit2, Package, DollarSign, List, Activity } from 'lucide-react';
 import './App.css';
 
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8080/api';
+const API_URL = process.env.REACT_APP_API_URL || 'https://pharamacymanager-production.up.railway.app/api';
 
 function App() {
   const [medicines, setMedicines] = useState([]);
